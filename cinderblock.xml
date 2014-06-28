@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="VST-DEV"
+	id="org.VST.mb"
+	author="MartinBlasko"
+	license="BSD"
+	summary="DEVELOPMENT version of VST support for ci::audio2"
+	git=""
+	version="development"
+	>
+
+
+
+	<includePath>include/</includePath>
+	<includePath>src</includePath>
+	
+	<headerPattern>src/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<headerPattern>include*.h</headerPattern>
+	
+</block>
+</cinder>
