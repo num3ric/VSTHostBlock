@@ -1,4 +1,8 @@
 #include "Host.h"
+
+#include <WinUser.h>
+#include "cinder/Log.h"
+
 //#include "windowsx.h"
 namespace vst
 	{
@@ -218,35 +222,36 @@ namespace vst
 
 		}
 
-	LONG WINAPI PluginWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-		{
+	LRESULT CALLBACK PluginWindowProc( _In_ HWND hwnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam )
+	{
 		// get effect pointer
-		vst::VSTHost* pHost = (vst::VSTHost*)GetWindowLong(hwnd, GWL_USERDATA);
+		vst::VSTHost* pHost = ( vst::VSTHost* ) GetWindowLongPtr( hwnd, GWLP_USERDATA );
 
-		if (pHost)
+		if( pHost )
+		{
+			switch( message )
 			{
-			switch (message)
-				{
 
-				case WM_TIMER:
-					pHost->effect->dispatcher(pHost->effect, effEditIdle, 0, 0, NULL, 0.0f);
-					return 0;
+			case WM_TIMER:
+				pHost->effect->dispatcher( pHost->effect, effEditIdle, 0, 0, NULL, 0.0f );
+				return 0;
 
-					// close plugin window
-				case WM_MOVING:
-					pHost->effect->dispatcher(pHost->effect, effEditIdle, 0, 0, NULL, 0.0f);
-					return 0;
+				// close plugin window
+			case WM_MOVING:
+				pHost->effect->dispatcher( pHost->effect, effEditIdle, 0, 0, NULL, 0.0f );
+				return 0;
 
-				case WM_CLOSE:
+			case WM_CLOSE:
 
-					pHost->effect->dispatcher(pHost->effect, effEditClose, 0, 0, NULL, 0.0f);
+				pHost->effect->dispatcher( pHost->effect, effEditClose, 0, 0, NULL, 0.0f );
 
-					return DefWindowProc(hwnd, message, wParam, lParam);
-				}
+				return DefWindowProc( hwnd, message, wParam, lParam );
 			}
-
-		return DefWindowProc(hwnd, message, wParam, lParam);
 		}
+
+		return DefWindowProc( hwnd, message, wParam, lParam );
+	}
+
 	void VSTHost::openEditor(){
 
 
@@ -269,7 +274,7 @@ namespace vst
 		RegisterClass(&windowClass);
 
 		editorHwnd = CreateWindowEx(WS_EX_TOOLWINDOW, L"Cinder VST", wString, WS_VISIBLE | WS_SYSMENU | WS_CAPTION, 64, 64, 64, 16, hwnd, NULL, hInstance, NULL);
-		SetWindowLong(editorHwnd, GWL_USERDATA, (long)this);
+		SetWindowLongPtr( editorHwnd, GWLP_USERDATA, ( long )this );
 
 		ERect * er;
 		effect->dispatcher(effect, effEditOpen, 0, 0, editorHwnd, 0.0f);
@@ -287,7 +292,7 @@ namespace vst
 		throw std::logic_error("The method or operation is not implemented.");
 		}
 
-	void VSTHost::process(ci::audio2::Buffer *buffer){
+	void VSTHost::process(ci::audio::Buffer *buffer){
 		 //TODO: Find better solution for pointers (smart_ptr?) 
 
 		float **inputs = 0;

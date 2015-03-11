@@ -1,12 +1,11 @@
-#include "cinder/audio2/Node.h"
-#include "cinder/audio2/Context.h"
-#include "cinder/audio2/dsp/Converter.h"
-#include "cinder/audio2/Debug.h"
+#include "cinder/audio/Node.h"
+#include "cinder/audio/Context.h"
+#include "cinder/audio/dsp/Converter.h"
 #include "cinder/Thread.h"
 #include "cinder/Utilities.h"
 
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
 #include <iostream>
 #include "aeffectx.h"
 #ifdef WIN32
@@ -76,7 +75,7 @@ namespace vst {
 		//-------------------------------------------------------------------------------------------------------
 		};
 
-	class VSTHost : public ci::audio2::Node
+	class VSTHost : public ci::audio::Node
 		{
 		public:
 			
@@ -104,7 +103,7 @@ namespace vst {
 			HWND winInitChildOLD(int width, int height, string name);
 			void setHWND(HWND mainWindow) { hwnd = mainWindow; }
 			void openEditor();
-			void process(ci::audio2::Buffer *buffer);
+			void process(ci::audio::Buffer *buffer);
 			void sendMidiEvent(int status, int8_t midi1, int8_t midi2);
 
 
@@ -117,7 +116,7 @@ namespace vst {
 
 			PluginLoader loader;
 			PluginEntryProc mainEntry;
-			ci::audio2::BufferInterleaved mBufferInterleaved;
+			ci::audio::BufferInterleaved mBufferInterleaved;
 			char id_name[75];
 			char effectName[256];
 			char vendorString[256];
